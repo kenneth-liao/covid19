@@ -1,6 +1,9 @@
 # core component library (dcc)
 from dash import dcc
 
+# bootstrap components for custom layouts
+import dash_bootstrap_components as dbc
+
 # html component library (html)
 from dash import html
 
@@ -14,13 +17,18 @@ from app import app
 from apps import chart
 from apps import maps
 
+import plotly.io as pio
+
+# set the default theme for plotly
+pio.templates.default = "presentation"
+
 app.layout = html.Div([
     html.H1('Hello World'),
     # the Location component stores the url in the address bar
     dcc.Location(id='url', refresh=False),
     html.Div([
         html.H5('Metric'),
-        dcc.Dropdown(id='metric',
+        dcc.Dropdown(id='metric', value='Confirmed cases', clearable=False,
                      options=[{'label': 'Confirmed cases', 'value': 'cases'}])
     ], style={'width': '200px'}),
     # the page-content Div is where we will display the plots
