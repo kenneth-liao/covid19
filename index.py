@@ -10,8 +10,16 @@ from dash.dependencies import Input, Output
 # connect app.py file
 from app import app
 
+# connect app pages
+from apps import page1
+
 app.layout = html.Div([
-    html.H1('Hello World')
+    html.H1('Hello World'),
+    html.Div([
+        html.H5('Metric'),
+        dcc.Dropdown(id='metric',
+                     options=[{'label':'Confirmed cases', 'value':'cases'}])
+    ], style={'width': '200px'})
 ])
 
 
