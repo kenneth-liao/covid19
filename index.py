@@ -22,79 +22,116 @@ pio.templates.default = "presentation"
 
 # style definitions for sidebar and main content
 SIDEBAR_STYLE = {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "16rem",
+    #"position": "fixed",
+    #"top": 70,
+    #"left": 0,
+    "bottom": 70,
+    "width": "25rem",
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
     "overflow": "scroll"
 }
 
 CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-    "display": "inline-block"
+    #"position": "fixed",
+    "top": 70,
+    "left": 300,
+    "bottom": 70,
+    "margin-left": "2rem",
+    "padding": "2rem 1rem"
 }
 
 # load data
 data = pd.read_csv('data/owid-covid-data.csv')
 
-sidebar = html.Div(
-    dcc.Checklist(id='location',
-                  value=['United States', 'United Kingdom', 'Germany', 'Canada', 'Italy'],
-                  options=[{'label': c, 'value': c} for c in data.location.unique()]
-                  ), style=SIDEBAR_STYLE
+# define the various cards that will be displayed in the app
+title = dbc.Card(
+    dbc.CardBody(
+        html.H1('COVID-19 Global Data Tracking')
+    ), color='#4F33FF'
 )
 
-plotting_options = dbc.Row([
-    dbc.Col(
-        html.Div([
-            html.H6('Metric'),
-            dcc.Dropdown(id='metric', value='Confirmed cases', clearable=False,
-                         options=[{'label': 'Confirmed cases', 'value': 'cases'}])
-        ], style={'width': 250})
-    ),
-    dbc.Col(
-        html.Div([
-            html.H6('Interval'),
-            dcc.Dropdown(id='interval', value='Cumulative', clearable=False,
-                         options=[{'label': 'Cumulative', 'value': 'total'}])
-        ], style={'width': 250})
-    ),
-    dbc.Col(
-        html.Div([
-            dcc.Checklist(id='relative', value='Cumulative',
-                          options=[{'label': ' Relative to Population', 'value': 'relative'}])
-        ]), align='end'
-    ),
-    dbc.Col(
+location_sidebar = dbc.Card(
+    dbc.CardBody(
+        dcc.Checklist(id='location',
+                      value=['United States', 'United Kingdom', 'Germany', 'Canada', 'Italy'],
+                      options=[{'label': c, 'value': c} for c in data.location.unique()]
+                      )
+    ), style={'width': '20rem'}, color='#FF7A33'
+)
+
+plotting_options = dbc.CardGroup([
+    dbc.Card(
+            dbc.CardBody([
+                html.H6('Metric'),
+                dcc.Dropdown(id='metric', value='Confirmed cases', clearable=False,
+                             options=[{'label': 'Confirmed cases', 'value': 'cases'}])
+            ])
 
     ),
-])
+    dbc.Card(
+            dbc.CardBody([
+                html.H6('Interval'),
+                dcc.Dropdown(id='interval', value='Cumulative', clearable=False,
+                             options=[{'label': 'Cumulative', 'value': 'total'}])
+            ])
+    ),
+    dbc.Card(
+            dbc.CardBody(
+                dcc.Checklist(id='relative', value='Cumulative',
+                              options=[{'label': ' Relative to Population', 'value': 'relative'}])
+            )
+    )
+], style={'width': '70rem'})
+
+
+
+
+
+graph = dbc.Card(
+    dbc.CardBody(
+        html.Div(dcc.Graph(id='visualization', figure={}))
+    ), color='#3396FF'
+)
+
+
 
 app.layout = html.Div([
-    html.H1('COVID-19 Global Data Tracking'),
-    # the Location component stores the url in the address bar
-    dcc.Location(id='url', refresh=False),
-
-
+    # # the Location component stores the url in the address bar
+    # dcc.Location(id='url', refresh=False),
+    #
+    #
+    # dbc.Row([
+    #     dbc.Col(sidebar, width=2),
+    #
+    #     dbc.Col(
+    #         html.Div([
+    #             plotting_options,
+    #
+    #             # graph object which will display the data view
+    #             dbc.Row(
+    #                 dbc.Col(
+    #                     html.Div(dcc.Graph(id='visualization', figure={})),
+    #                 )
+    #             ),
+    #
+    #             # bottom navigation menu
+    #             dbc.Row(
+    #                 dbc.Col(
+    #                     html.Div([
+    #
+    #                     ])
+    #                 )
+    #             )
+    #         ], style=CONTENT_STYLE)
+    #     )
+    # ])
+    dbc.Row(title),
     dbc.Row([
-        dbc.Col(sidebar, width=2),
-
+        dbc.Col(location_sidebar, width='auto'),
         dbc.Col([
-            plotting_options,
-
-            # graph object which will display the data view
-            html.Div(dcc.Graph(id='visualization', figure={})),
-
-            # bottom navigation menu
-            html.Div([
-
-            ])
-        ])
+            dbc.Row(plotting_options),
+            dbc.Row(graph)], width=8)
     ])
 ])
 
@@ -113,7 +150,7 @@ def update_figure(location, metric):
 
     fig = go.Figure(data=traces)
     fig.update_traces(marker={'size': 3}, line={'width': 1})
-    fig.update_layout(hovermode='x', showlegend=True)
+    fig.update_layout(hovermode='x', showlegend=True, height=800)
 
     return fig
 
