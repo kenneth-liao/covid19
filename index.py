@@ -43,9 +43,10 @@ CONTENT_STYLE = {
 data = pd.read_csv('data/owid-covid-data.csv')
 
 sidebar = html.Div(
-    dcc.Checklist(id='location', value="United States",
-                  options=[{'label': c, 'value': c} for c in data.location.unique()],
-                  persistence=True, persistence_type='memory'), style=SIDEBAR_STYLE
+    dcc.Checklist(id='location',
+                  value=['United States', 'United Kingdom', 'Germany', 'Canada', 'Italy'],
+                  options=[{'label': c, 'value': c} for c in data.location.unique()]
+                  ), style=SIDEBAR_STYLE
 )
 
 plotting_options = dbc.Row([
@@ -53,23 +54,20 @@ plotting_options = dbc.Row([
         html.Div([
             html.H6('Metric'),
             dcc.Dropdown(id='metric', value='Confirmed cases', clearable=False,
-                         options=[{'label': 'Confirmed cases', 'value': 'cases'}],
-                         persistence=True, persistence_type='memory')
+                         options=[{'label': 'Confirmed cases', 'value': 'cases'}])
         ], style={'width': 250})
     ),
     dbc.Col(
         html.Div([
             html.H6('Interval'),
             dcc.Dropdown(id='interval', value='Cumulative', clearable=False,
-                         options=[{'label': 'Cumulative', 'value': 'total'}],
-                         persistence=True, persistence_type='memory')
+                         options=[{'label': 'Cumulative', 'value': 'total'}])
         ], style={'width': 250})
     ),
     dbc.Col(
         html.Div([
             dcc.Checklist(id='relative', value='Cumulative',
-                          options=[{'label': ' Relative to Population', 'value': 'relative'}],
-                          persistence=True, persistence_type='memory')
+                          options=[{'label': ' Relative to Population', 'value': 'relative'}])
         ]), align='end'
     ),
     dbc.Col(
@@ -108,13 +106,14 @@ def update_figure(location, metric):
     traces = []
     for country in location:
         traces.append(
-            go.Scatter(name=country,
+            go.Scatter(name=country, mode='markers+lines',
                        x=data[data['location'] == country]['date'],
-                       y=data['total_cases'])
+                       y=data[data['location'] == country].total_cases)
         )
 
     fig = go.Figure(data=traces)
-    fig.update_layout(showlegend=True)
+    fig.update_traces(marker={'size': 3}, line={'width': 1})
+    fig.update_layout(hovermode='x', showlegend=True)
 
     return fig
 
