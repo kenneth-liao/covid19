@@ -18,7 +18,7 @@ pio.templates.default = "presentation"
 
 # USER DEFINED STYLE SETTINGS #
 app_width = 8
-##################
+###############################
 margin = (12-app_width)/2
 
 # define metrics
@@ -138,7 +138,7 @@ app.layout = html.Div([
                         # empty placeholder
                     ), style={'height': '10vh'}
                 )
-            ], className='mb-2', style={'background-color': '#FF6E33'})
+            ], className='mb-2')
         ], width={'size': 10-2*margin})
     ]),
 
