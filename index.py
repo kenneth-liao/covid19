@@ -12,14 +12,21 @@ import pandas as pd
 from plotly import graph_objects as go
 import plotly.io as pio
 
+# ------------------------------------------------------------------------------
+# User defined styling
+
+
 # set the default theme for plotly
 pio.templates.default = "presentation"
 
-
-# USER DEFINED STYLE SETTINGS #
+# set app width (out of 12 total columns)
 app_width = 8
-###############################
-margin = (12-app_width)/2
+margin = (12-app_width)/2 # don't change this
+
+
+# ------------------------------------------------------------------------------
+# Data Processing
+
 
 # define metrics
 metric_options = [
@@ -43,6 +50,10 @@ data = data[['location', 'date', 'total_cases', 'new_cases', 'total_cases_per_mi
              'total_deaths', 'new_deaths', 'total_deaths_per_million', 'new_deaths_per_million',
              'total_tests', 'new_tests',
              'total_vaccinations', 'new_vaccinations']]
+
+
+# ------------------------------------------------------------------------------
+# Define main DCC components
 
 
 # location check list component
@@ -91,6 +102,10 @@ def visualization():
         className='h-100',
         config={'displayModeBar': False}
     )
+
+
+# ------------------------------------------------------------------------------
+# App Layout
 
 
 app.layout = html.Div([
@@ -178,7 +193,11 @@ app.layout = html.Div([
 ])
 
 
-# callbacks to connect components
+# ------------------------------------------------------------------------------
+# Calllbacks to connect DCC components
+
+
+# connect visualization
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
                Input('metric', 'value'),
