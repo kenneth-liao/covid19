@@ -25,7 +25,8 @@ margin = (12-app_width)/2
 metric_options = [
     {'label': 'Confirmed Cases', 'value': 'cases'},
     {'label': 'Confirmed Deaths', 'value': 'deaths'},
-    {'label': 'Tests', 'value': 'tests'}
+    {'label': 'Tests', 'value': 'tests'},
+    {'label': 'Vaccinations', 'value': 'vaccinations'}
 ]
 
 # define intervals
