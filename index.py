@@ -152,12 +152,26 @@ app.layout = html.Div([
                 )
             ), width={'size': 2, 'offset': margin}
         ),
-        dbc.Col(
+        dbc.Col([
+            dbc.CardFooter(
+                dbc.Tabs([
+                    dbc.Tab(
+                        label='Chart'
+                    ),
+                    dbc.Tab(
+                        label='Map'
+                    ),
+                    dbc.Tab(
+                        label='Table'
+                    )
+                ]), style={'height': '3vh'}
+            ),
             dbc.Card(
                 dbc.CardBody(
-                    visualization(), style={'height': '60vh'}
+                    visualization(), style={'height': '57vh'}
                 )
-            ), width={'size': 10-2*margin}
+            )
+        ], width={'size': 10-2*margin}
         )
     ])
 
