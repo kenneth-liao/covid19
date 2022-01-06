@@ -48,8 +48,9 @@ data = pd.read_csv('data/owid-covid-data.csv')
 # filter data down to only columns we need
 data = data[['location', 'date', 'total_cases', 'new_cases', 'total_cases_per_million', 'new_cases_per_million',
              'total_deaths', 'new_deaths', 'total_deaths_per_million', 'new_deaths_per_million',
-             'total_tests', 'new_tests',
-             'total_vaccinations', 'new_vaccinations']]
+             'total_tests', 'new_tests', 'total_tests_per_thousand', 'new_tests_per_thousand',
+             'total_vaccinations', 'new_vaccinations', 'total_vaccinations_per_hundred',
+             'new_vaccinations_smoothed_per_million']]
 
 
 # ------------------------------------------------------------------------------
@@ -200,27 +201,45 @@ app.layout = html.Div([
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
                Input('metric', 'value'),
-               Input('interval', 'value')])
-def update_figure(location, metric, interval):
+               Input('interval', 'value'),
+               Input('relative', 'value')])
+def update_figure(location, metric, interval, relative):
     # resample data to weekly
     if interval == 'weekly':
-        resampled = data[['location', 'date', 'new_'+metric]].groupby('location').rolling(7, on='date').sum()
+        # relative logic
+        if relative:
+            if metric == 'tests':
+                col_name = 'new_' + metric + '_per_thousand'
+            else:
+                col_name = 'new_' + metric + '_per_million'
+        else:
+            col_name = 'new_' + metric
+
+        resampled = data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
 
         traces = []
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
                            x=resampled.loc[country, :]['date'],
-                           y=resampled.loc[country, :]['new_'+metric])
+                           y=resampled.loc[country, :][col_name])
             )
 
     else:
+        # relative logic
+        if relative:
+            if metric == 'tests':
+                col_name = interval + '_' + metric + '_per_thousand'
+            else:
+                col_name = interval + '_' + metric + '_per_million'
+        else:
+            col_name = interval + '_' + metric
         traces = []
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
                            x=data[data['location'] == country]['date'],
-                           y=data[data['location'] == country][interval+'_'+metric])
+                           y=data[data['location'] == country][col_name])
             )
 
     fig = go.Figure(data=traces)
