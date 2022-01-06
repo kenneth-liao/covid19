@@ -180,6 +180,13 @@ app.layout = html.Div([
             )
         ], width={'size': 10-2*margin}
         )
+    ]),
+    dbc.Row([
+        dbc.Col(
+            html.Div(
+                html.P('Dashboard design by Kenneth Liao, 2022', className='mt-2')
+            ), width={'size': 10-2*margin, 'offset': margin + 2}, style={'text-align': 'right'}
+        )
     ])
 
 ])
