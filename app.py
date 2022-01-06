@@ -6,7 +6,8 @@ import dash_bootstrap_components as dbc
 app = dash.Dash(__name__, suppress_callback_exceptions=True,
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial_scale=1.0'}],
-                external_stylesheets=[dbc.themes.BOOTSTRAP])
+                external_stylesheets=[dbc.themes.SPACELAB]
+                )
 
 # instantiate server
 server = app.server

@@ -17,11 +17,11 @@ import plotly.io as pio
 
 
 # set the default theme for plotly
-pio.templates.default = "presentation"
+pio.templates.default = "plotly_white"
 
 # set app width (out of 12 total columns)
 app_width = 8
-margin = (12-app_width)/2 # don't change this
+margin = (12-app_width)/2  # don't change this
 
 
 # ------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ def interval_dropdown():
     return dcc.Dropdown(
         id='interval',
         options=interval_options,
-        value='total',
+        value='new',
         clearable=False
     )
 
@@ -117,7 +117,7 @@ app.layout = html.Div([
             dbc.Card(
                 dbc.CardBody(
                     html.H1('COVID-19 Global Data Dashboard')
-                ), className='mb-4', style={'background-color': '#FF6E33'}
+                ), className='mb-4'
             ), width={'size': app_width, 'offset': margin}
         )
     ),
