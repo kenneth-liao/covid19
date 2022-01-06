@@ -128,7 +128,7 @@ app.layout = html.Div([
             dbc.Card(
                 dbc.CardBody(
                     html.H1('Logo')
-                ), className='mb-2', style={'height': '10vh'}
+                ), className='mb-4', style={'height': '10vh'}
             ), width={'size': 2, 'offset': margin}
         ),
         dbc.Col([  # plotting options
@@ -155,7 +155,7 @@ app.layout = html.Div([
                         # empty placeholder
                     ), style={'height': '10vh'}
                 )
-            ], className='mb-2')
+            ], className='mb-4', style={'outline': False})
         ], width={'size': 10-2*margin})
     ]),
 
@@ -169,7 +169,7 @@ app.layout = html.Div([
             ), width={'size': 2, 'offset': margin}
         ),
         dbc.Col([
-            dbc.CardFooter(
+            dbc.CardHeader(
                 dbc.Tabs([
                     dbc.Tab(
                         label='Chart'
@@ -180,7 +180,7 @@ app.layout = html.Div([
                     dbc.Tab(
                         label='Table'
                     )
-                ]), style={'height': '3vh'}
+                ]), style={'height': '3vh', 'background-color': 'rgb(245, 245, 245)'}
             ),
             dbc.Card(
                 dbc.CardBody(
