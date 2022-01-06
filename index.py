@@ -131,50 +131,21 @@ app.layout = html.Div([
                 ), className='mb-4', style={'height': '10vh'}
             ), width={'size': 2, 'offset': margin}
         ),
-        # dbc.Col(
-        #     dbc.Row(
-        #         dbc.Card(
-        #             dbc.Col([
-        #                 html.H6('Metric'),
-        #                 metric_dropdown()
-        #             ]), style={'height': '10vh'}
-        #         )
-        #     ), width={'size': 10-2*margin}
-        # )
-
         dbc.Col([  # plotting options
-            dbc.CardGroup([
-                dbc.Card([
-                    dbc.Row([
-                        dbc.Col([
-                            html.H6('Metric'),
-                            metric_dropdown()
-                        ], style={'margin-left': '10px'}, align='center'),
-                        dbc.Col([
-                            html.H6('Interval'),
-                            interval_dropdown()
-                        ], style={'margin-left': '10px'}, align='center'),
-                        dbc.Col([
-                            relative_checklist(),
-                        ], style={'margin-left': '10px'}, align='center')
-                    ], style={'height': '10vh'})
-                ])
-                # dbc.Card(
-                #     dbc.CardBody([
-                #         html.H6('Interval'),
-                #         interval_dropdown()
-                #     ]), style={'height': '10vh'},
-                # ),
-                # dbc.Card(
-                #     dbc.CardBody(
-                #         relative_checklist()
-                #     ), style={'height': '10vh'},
-                # ),
-                # dbc.Card(
-                #     dbc.CardBody(
-                #         # empty placeholder
-                #     ), style={'height': '10vh'},
-                # )
+            dbc.Card([
+                dbc.Row([
+                    dbc.Col([
+                        html.H6('Metric'),
+                        metric_dropdown()
+                    ], style={'margin-left': '10px'}, align='center'),
+                    dbc.Col([
+                        html.H6('Interval'),
+                        interval_dropdown()
+                    ], style={'margin-left': '10px'}, align='center'),
+                    dbc.Col([
+                        relative_checklist(),
+                    ], style={'margin-left': '10px'}, align='center')
+                ], style={'height': '10vh'})
             ], className='mb-4')
         ], width={'size': 10-2*margin})
     ]),
@@ -247,7 +218,9 @@ def update_figure(location, metric, interval):
 
     fig = go.Figure(data=traces)
     fig.update_traces(marker={'size': 3}, line={'width': 1})
-    fig.update_layout(hovermode='x', showlegend=True)
+    fig.update_layout(hovermode='x', showlegend=True,
+                      legend={'orientation': 'h'},
+                      margin={'t': 50})
 
     return fig
 
