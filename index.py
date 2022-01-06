@@ -60,7 +60,8 @@ data = data[['location', 'date', 'total_cases', 'new_cases', 'total_cases_per_mi
 def location_checklist():
     return dcc.Checklist(
         id='location', value=['United States', 'United Kingdom', 'Germany', 'Canada', 'Italy'],
-        options=[{'label': c, 'value': c} for c in data.location.unique()]
+        options=[{'label': c, 'value': c} for c in data.location.unique()],
+        inputStyle={'margin-right': '5px'}  # adds space between checkbox & label
     )
 
 
