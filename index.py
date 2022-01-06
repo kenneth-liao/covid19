@@ -197,6 +197,20 @@ app.layout = html.Div([
 # Calllbacks to connect DCC components
 
 
+# enable/disable relative to population option
+@app.callback(Output('relative', 'options'),
+              Output('relative', 'style'),
+              Input('metric', 'value'))
+def disable_relative(metric):
+    if metric == 'vaccinations':
+        options = {'disabled': True}
+        style = {'color': 'rgb(245, 15, 15)'}
+    else:
+        options = {'disabled': False}
+        style = {'color': 'rgb(245, 245, 245)'}
+    return options, style
+
+
 # connect visualization
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
@@ -207,7 +221,7 @@ def update_figure(location, metric, interval, relative):
     # resample data to weekly
     if interval == 'weekly':
         # relative logic
-        if relative:
+        if (relative == 'relative') & (metric != 'vaccinations'):
             if metric == 'tests':
                 col_name = 'new_' + metric + '_per_thousand'
             else:
@@ -227,13 +241,14 @@ def update_figure(location, metric, interval, relative):
 
     else:
         # relative logic
-        if relative:
+        if (relative == 'relative') & (metric != 'vaccinations'):
             if metric == 'tests':
                 col_name = interval + '_' + metric + '_per_thousand'
             else:
                 col_name = interval + '_' + metric + '_per_million'
         else:
             col_name = interval + '_' + metric
+
         traces = []
         for country in location:
             traces.append(
