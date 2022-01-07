@@ -162,14 +162,17 @@ app.layout = html.Div([
         ),
         dbc.Col([
             dbc.CardHeader(
-                dbc.Tabs([
+                dbc.Tabs(id='tab-group', active_tab='chart', children=[
                     dbc.Tab(
+                        id='chart',
                         label='Chart'
                     ),
                     dbc.Tab(
+                        id='map',
                         label='Map'
                     ),
                     dbc.Tab(
+                        id='table',
                         label='Table'
                     )
                 ]), style={'height': '3vh', 'background-color': 'rgb(245, 245, 245)'}
