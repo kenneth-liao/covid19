@@ -11,12 +11,18 @@ from apps import data
 # Graph Object
 
 
-graph = dcc.Graph(
+graph = [dcc.Graph(
         id='visualization',
         figure={},
         className='h-100',
         config={'displayModeBar': False}
-    )
+    ),
+    dcc.RangeSlider(
+        id='date-slider',
+        min=data.data.date.min(),
+        max=data.data.date.max(),
+        value=[data.data.date.min(), data.data.date.max()]
+    )]
 
 
 # ------------------------------------------------------------------------------

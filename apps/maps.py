@@ -1,4 +1,4 @@
-from dash import dcc
+from dash import dcc, html
 from dash.dependencies import Input, Output
 from plotly import graph_objects as go
 
@@ -25,10 +25,10 @@ graph = dcc.Graph(
 
 @app.callback(Output('visualization', 'figure'),
               [Input('metric', 'value'),
-               Input('interval', 'value'),
-               Input('relative', 'value')])
-def update_figure(metric, interval, relative):
-
+               Input('interval', 'value')])
+def update_figure(metric, interval):
+    fig = html.Div(html.P('MAP WILL GO HERE'))
+    return fig
     # if interval == 'weekly':
     #     # relative logic
     #     if (relative == 'relative') & (metric != 'vaccinations'):

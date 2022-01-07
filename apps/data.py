@@ -11,3 +11,5 @@ data = data[['iso_code', 'location', 'date', 'total_cases', 'new_cases', 'total_
              'new_deaths_per_million', 'total_tests', 'new_tests', 'total_tests_per_thousand',
              'new_tests_per_thousand', 'total_vaccinations', 'new_vaccinations', 'total_vaccinations_per_hundred',
              'new_vaccinations_smoothed_per_million']]
+# convert date column to datetime
+data.date = pd.to_datetime(data.date)
