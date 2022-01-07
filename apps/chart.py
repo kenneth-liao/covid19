@@ -1,30 +1,77 @@
 from dash import dcc
-from dash import html
 from dash.dependencies import Input, Output
 from plotly import graph_objects as go
 
-import pandas as pd
-import pathlib
-
+# connect app files
 from app import app
-
-# get relative data folder
-PATH = pathlib.Path(__file__).parent
-DATA_PATH = PATH.joinpath("../data").resolve()
-
-data = pd.read_csv(DATA_PATH.joinpath("owid-covid-data.csv"))
+from apps import data
 
 
-layout = html.Div([
-    dcc.Graph(id='plot', figure={})
-])
+# ------------------------------------------------------------------------------
+# Graph Object
 
 
-@app.callback(Output('plot', 'figure'),
-              [Input('metric', 'value')])
-def update_figure(metric):
-    fig = go.Figure(
-        go.Scatter(x=data['date'], y=data['total_cases'])
+graph = dcc.Graph(
+        id='visualization',
+        figure={},
+        className='h-100',
+        config={'displayModeBar': False}
     )
+
+
+# ------------------------------------------------------------------------------
+# Callbacks
+
+
+@app.callback(Output('visualization', 'figure'),
+              [Input('location', 'value'),
+               Input('metric', 'value'),
+               Input('interval', 'value'),
+               Input('relative', 'value')])
+def update_figure(location, metric, interval, relative):
+    # resample data to weekly
+    if interval == 'weekly':
+        # relative logic
+        if (relative == 'relative') & (metric != 'vaccinations'):
+            if metric == 'tests':
+                col_name = 'new_' + metric + '_per_thousand'
+            else:
+                col_name = 'new_' + metric + '_per_million'
+        else:
+            col_name = 'new_' + metric
+
+        resampled = data.data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
+
+        traces = []
+        for country in location:
+            traces.append(
+                go.Scatter(name=country, mode='markers+lines',
+                           x=resampled.loc[country, :]['date'],
+                           y=resampled.loc[country, :][col_name])
+            )
+
+    else:
+        # relative logic
+        if (relative == 'relative') & (metric != 'vaccinations'):
+            if metric == 'tests':
+                col_name = interval + '_' + metric + '_per_thousand'
+            else:
+                col_name = interval + '_' + metric + '_per_million'
+        else:
+            col_name = interval + '_' + metric
+
+        traces = []
+        for country in location:
+            traces.append(
+                go.Scatter(name=country, mode='markers+lines',
+                           x=data.data[data.data['location'] == country]['date'],
+                           y=data.data[data.data['location'] == country][col_name])
+            )
+
+    fig = go.Figure(data=traces)
+    fig.update_traces(marker={'size': 3}, line={'width': 1})
+    fig.update_layout(hovermode='x', showlegend=True,
+                      legend={'orientation': 'h'},
+                      margin={'t': 50})
 
     return fig

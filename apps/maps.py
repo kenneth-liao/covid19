@@ -1,19 +1,35 @@
 from dash import dcc
-from dash import html
 from dash.dependencies import Input, Output
+from plotly import graph_objects as go
 
-import pandas as pd
-import pathlib
-
+# connect app files
 from app import app
-
-# get relative data folder
-PATH = pathlib.Path(__file__).parent
-DATA_PATH = PATH.joinpath("../data").resolve()
-
-data = pd.read_csv(DATA_PATH.joinpath("owid-covid-data.csv"))
+from apps import data
 
 
-layout = html.Div([
-    html.H1('MAPS TEST')
-])
+# ------------------------------------------------------------------------------
+# Graph Object
+
+
+graph = dcc.Graph(
+        id='visualization',
+        figure={},
+        className='h-100',
+        config={'displayModeBar': False}
+    )
+
+
+# ------------------------------------------------------------------------------
+# Callbacks
+
+
+@app.callback(Output('visualization', 'figure'),
+              [Input('location', 'value'),
+               Input('metric', 'value'),
+               Input('interval', 'value'),
+               Input('relative', 'value')])
+def update_figure():
+
+    fig = go.Figure()
+
+    return fig

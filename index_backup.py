@@ -8,11 +8,8 @@ from dash import html
 from dash.dependencies import Input, Output
 # connect app.py file
 from app import app
-# connect chart file
-from apps import chart
-from apps import maps
-# connect data file
-from apps import data
+import pandas as pd
+from plotly import graph_objects as go
 import plotly.io as pio
 
 # ------------------------------------------------------------------------------
@@ -26,11 +23,9 @@ pio.templates.default = "plotly_white"
 app_width = 8
 margin = (12-app_width)/2  # don't change this
 
-footer_signature = 'Dashboard design by Kenneth Liao, 2022'
-
 
 # ------------------------------------------------------------------------------
-# Data Options
+# Data Processing
 
 
 # define metrics
@@ -48,6 +43,15 @@ interval_options = [
     {'label': 'Weekly', 'value': 'weekly'}
 ]
 
+# load the latest data
+data = pd.read_csv('data/owid-covid-data.csv')
+# filter data down to only columns we need
+data = data[['location', 'date', 'total_cases', 'new_cases', 'total_cases_per_million', 'new_cases_per_million',
+             'total_deaths', 'new_deaths', 'total_deaths_per_million', 'new_deaths_per_million',
+             'total_tests', 'new_tests', 'total_tests_per_thousand', 'new_tests_per_thousand',
+             'total_vaccinations', 'new_vaccinations', 'total_vaccinations_per_hundred',
+             'new_vaccinations_smoothed_per_million']]
+
 
 # ------------------------------------------------------------------------------
 # Define main DCC components
@@ -57,7 +61,7 @@ interval_options = [
 def location_checklist():
     return dcc.Checklist(
         id='location', value=['United States', 'United Kingdom', 'Germany', 'Canada', 'Italy'],
-        options=[{'label': c, 'value': c} for c in data.data.location.unique()],
+        options=[{'label': c, 'value': c} for c in data.location.unique()],
         inputStyle={'margin-right': '5px'}  # adds space between checkbox & label
     )
 
@@ -158,26 +162,25 @@ app.layout = html.Div([
         ),
         dbc.Col([
             dbc.CardHeader(
-                dcc.Tabs(id='tab-group', value='chart', children=[
-                    dcc.Tab(
-                        label='Chart',
-                        value='chart'
+                dbc.Tabs(id='tab-group', active_tab='chart', children=[
+                    dbc.Tab(
+                        id='chart',
+                        label='Chart'
                     ),
-                    dcc.Tab(
-                        label='Map',
-                        value='map'
+                    dbc.Tab(
+                        id='map',
+                        label='Map'
                     ),
-                    dcc.Tab(
-                        label='Table',
-                        value='table'
+                    dbc.Tab(
+                        id='table',
+                        label='Table'
                     )
-                ]), style={'height': '5vh', 'background-color': 'rgb(245, 245, 245)'}
+                ]), style={'height': '3vh', 'background-color': 'rgb(245, 245, 245)'}
             ),
             dbc.Card(
-                dbc.CardBody(id='visualization-card',
-                             children={},
-                             style={'height': '55vh'}
-                             )
+                dbc.CardBody(
+                    visualization(), style={'height': '57vh'}
+                )
             )
         ], width={'size': 10-2*margin}
         )
@@ -185,7 +188,7 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col(
             html.Div(
-                html.P(footer_signature, className='mt-2')
+                html.P('Dashboard design by Kenneth Liao, 2022', className='mt-2')
             ), width={'size': 10-2*margin, 'offset': margin + 2}, style={'text-align': 'right'}
         )
     ])
@@ -198,15 +201,58 @@ app.layout = html.Div([
 
 
 # connect visualization
-@app.callback(Output('visualization-card', 'children'),
-              Input('tab-group', 'value'))
-def update_card(tab):
-    if tab == 'chart':
-        return chart.graph
-    elif tab == 'map':
-        return maps.graph
+@app.callback(Output('visualization', 'figure'),
+              [Input('location', 'value'),
+               Input('metric', 'value'),
+               Input('interval', 'value'),
+               Input('relative', 'value')])
+def update_figure(location, metric, interval, relative):
+    # resample data to weekly
+    if interval == 'weekly':
+        # relative logic
+        if (relative == 'relative') & (metric != 'vaccinations'):
+            if metric == 'tests':
+                col_name = 'new_' + metric + '_per_thousand'
+            else:
+                col_name = 'new_' + metric + '_per_million'
+        else:
+            col_name = 'new_' + metric
+
+        resampled = data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
+
+        traces = []
+        for country in location:
+            traces.append(
+                go.Scatter(name=country, mode='markers+lines',
+                           x=resampled.loc[country, :]['date'],
+                           y=resampled.loc[country, :][col_name])
+            )
+
     else:
-        return html.Div(html.P('ERROR'))
+        # relative logic
+        if (relative == 'relative') & (metric != 'vaccinations'):
+            if metric == 'tests':
+                col_name = interval + '_' + metric + '_per_thousand'
+            else:
+                col_name = interval + '_' + metric + '_per_million'
+        else:
+            col_name = interval + '_' + metric
+
+        traces = []
+        for country in location:
+            traces.append(
+                go.Scatter(name=country, mode='markers+lines',
+                           x=data[data['location'] == country]['date'],
+                           y=data[data['location'] == country][col_name])
+            )
+
+    fig = go.Figure(data=traces)
+    fig.update_traces(marker={'size': 3}, line={'width': 1})
+    fig.update_layout(hovermode='x', showlegend=True,
+                      legend={'orientation': 'h'},
+                      margin={'t': 50})
+
+    return fig
 
 
 if __name__ == '__main__':
