@@ -182,14 +182,7 @@ app.layout = html.Div([
                                      )
                     )
                 )
-            ),
-            dbc.Row([
-                dbc.Col(),
-                dbc.Col(
-
-                ),
-                dbc.Col()
-            ])
+            )
         ], width={'size': 10-2*margin}
         )
     ]),

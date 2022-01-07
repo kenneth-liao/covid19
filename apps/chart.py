@@ -1,6 +1,8 @@
-from dash import dcc
+from dash import dcc, html
 from dash.dependencies import Input, Output
 from plotly import graph_objects as go
+# bootstrap components for custom layouts
+import dash_bootstrap_components as dbc
 
 # connect app files
 from app import app
@@ -11,18 +13,40 @@ from apps import data
 # Graph Object
 
 
-graph = [dcc.Graph(
-        id='visualization',
-        figure={},
-        className='h-100',
-        config={'displayModeBar': False}
+graph = [
+    html.Div(
+        dcc.Graph(
+            id='visualization',
+            figure={},
+            className='h-100',
+            config={'displayModeBar': False}
+        ), style={'height': '52vh'}
     ),
-    dcc.RangeSlider(
-        id='date-slider',
-        min=data.data.date.min(),
-        max=data.data.date.max(),
-        value=[data.data.date.min(), data.data.date.max()]
-    )]
+
+    html.Div(
+        dbc.Row([
+            dbc.Col(
+                html.Div(
+                    html.P('Label 1')
+                ), width=2, style={'text-align': 'center'}
+            ),
+            dbc.Col(
+                dcc.RangeSlider(
+                    id='date-slider',
+                    min=0,
+                    max=10,
+                    value=[0, 10],
+                    dots=True,
+                    allowCross=False), width=8
+            ),
+            dbc.Col(
+                html.Div(
+                    html.P('Label 2')
+                ), width=2, style={'text-align': 'center'}
+            )
+        ]), style={'height': '3vh'}
+    )
+]
 
 
 # ------------------------------------------------------------------------------
