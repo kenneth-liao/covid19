@@ -197,20 +197,6 @@ app.layout = html.Div([
 # Calllbacks to connect DCC components
 
 
-# enable/disable relative to population option
-@app.callback(Output('relative', 'options'),
-              Output('relative', 'style'),
-              Input('metric', 'value'))
-def disable_relative(metric):
-    if metric == 'vaccinations':
-        options = {'disabled': True}
-        style = {'color': 'rgb(245, 15, 15)'}
-    else:
-        options = {'disabled': False}
-        style = {'color': 'rgb(245, 245, 245)'}
-    return options, style
-
-
 # connect visualization
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
