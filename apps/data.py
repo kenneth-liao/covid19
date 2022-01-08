@@ -14,5 +14,8 @@ data = data[['iso_code', 'location', 'date', 'total_cases', 'new_cases', 'total_
 # convert date column to datetime
 data['date'] = pd.to_datetime(data.date)
 
+# compute weekly data
+weekly_data = data.groupby(['iso_code', 'location']).rolling(7, on='date').sum()
+
 # generate marks for date range slider
 marks = {int(i): str(j)[:10] for i, j in enumerate(sorted(data.date.unique()))}

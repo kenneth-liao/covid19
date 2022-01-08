@@ -3,6 +3,7 @@ from dash.dependencies import Input, Output
 from plotly import graph_objects as go
 # bootstrap components for custom layouts
 import dash_bootstrap_components as dbc
+import pandas as pd
 
 # connect app files
 from app import app
@@ -14,15 +15,6 @@ from apps import data
 
 
 graph = [
-
-    # stores intermediate, computed data. this step is slow.
-    dcc.Store(
-        id='data-store'
-    ),
-    # stores col_name that will be plotted
-    dcc.Store(
-        id='col-name'
-    ),
 
     html.Div(
         dcc.Graph(
@@ -83,8 +75,7 @@ def update_slider_labels(slider_range):
                Input('interval', 'value'),
                Input('relative_option', 'value')])
 def update_figure(location, metric, interval, relative_option):
-
-    # resample data to weekly
+    # weekly interval data is precomputed in data file
     if interval == 'weekly':
         # relative logic
         if relative_option == ['relative']:
@@ -96,14 +87,12 @@ def update_figure(location, metric, interval, relative_option):
         else:
             col_name = f'new_{metric}'
 
-        resampled = data.data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
-
         traces = []
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
-                           x=resampled.loc[country, :]['date'],
-                           y=resampled.loc[country, :][col_name])
+                           x=data.weekly_data.loc[:, country, :]['date'],
+                           y=data.weekly_data.loc[:, country, :][col_name])
             )
 
     else:
@@ -131,5 +120,3 @@ def update_figure(location, metric, interval, relative_option):
                       margin={'t': 50})
 
     return fig
-
-
