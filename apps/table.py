@@ -1,6 +1,5 @@
 from dash import dcc, html
 from dash.dependencies import Input, Output
-from plotly import graph_objects as go
 import dash_bootstrap_components as dbc
 import pandas as pd
 
@@ -17,7 +16,7 @@ graph = [
 
     html.Div(
         dcc.Graph(
-            id='map-graph',
+            id='table-graph',
             figure={},
             className='h-100',
             config={'displayModeBar': False}
@@ -29,14 +28,14 @@ graph = [
             dbc.Col(
                 html.Div(
                     html.P(
-                        id='map-slider-label-1',
+                        id='table-slider-label-1',
                         children={}
                     )
                 ), width=2, style={'text-align': 'center'}
             ),
             dbc.Col(
                 dcc.RangeSlider(
-                    id='map-date-slider',
+                    id='table-date-slider',
                     min=0,
                     max=len(data.marks) - 1,
                     value=[0, len(data.marks) - 1],
@@ -48,7 +47,7 @@ graph = [
             dbc.Col(
                 html.Div(
                     html.P(
-                        id='map-slider-label-2',
+                        id='table-slider-label-2',
                         children={}
                     )
                 ), width=2, style={'text-align': 'center'}
@@ -60,20 +59,20 @@ graph = [
 
 # ------------------------------------------------------------------------------
 # Callbacks
-@app.callback(Output('map-slider-label-1', 'children'),
-              Output('map-slider-label-2', 'children'),
-              Input('map-date-slider', 'value'))
+@app.callback(Output('table-slider-label-1', 'children'),
+              Output('table-slider-label-2', 'children'),
+              Input('table-date-slider', 'value'))
 def update_slider_labels(slider_range):
     label1, label2 = slider_range
     return data.marks[label1], data.marks[label2]
 
 
-@app.callback(Output('map-graph', 'figure'),
+@app.callback(Output('table-graph', 'figure'),
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
                Input('relative_option', 'value'),
-               Input('map-date-slider', 'value')])
+               Input('table-date-slider', 'value')])
 def update_figure(location, metric, interval, relative_option, date_range):
     date1, date2 = date_range
 
@@ -90,28 +89,12 @@ def update_figure(location, metric, interval, relative_option, date_range):
         else:
             col_name = f'new_{metric}'
 
-        map_data = data.weekly_data[date_filter]
-        map_data = map_data[['iso_code', col_name]].groupby('iso_code').sum()
+        table_data = data.weekly_data[date_filter]
+        table_data = table_data[['iso_code', col_name]].groupby('iso_code').sum()
         # filter out OWID calculated regions (like continent totals)
-        map_data = map_data.drop([i for i in map_data.index if 'OWID' in i])
+        table_data = table_data.drop([i for i in table_data.index if 'OWID' in i])
 
-        fig = go.Figure(
-            go.Choropleth(
-                locations=map_data.index,
-                z=map_data[col_name],
-                colorscale='dense',
-                autocolorscale=False
-            )
-        )
 
-        fig.update_layout(
-            title_text='2014 Global GDP',
-            geo=dict(
-                showframe=False,
-                showcoastlines=False,
-                projection_type='equirectangular'
-            )
-        )
 
     else:
         date_filter = (data.data.date >= pd.to_datetime(data.marks[date1])) & \
@@ -126,27 +109,6 @@ def update_figure(location, metric, interval, relative_option, date_range):
         else:
             col_name = f'{interval}_{metric}'
 
-        map_data = data.data[date_filter]
-        map_data = map_data[['iso_code', col_name]].groupby('iso_code').sum()
-        # filter out OWID calculated regions (like continent totals)
-        map_data = map_data.drop([i for i in map_data.index if 'OWID' in i])
 
-        fig = go.Figure(
-            go.Choropleth(
-                locations=map_data.index,
-                z=map_data[col_name],
-                colorscale='dense',
-                autocolorscale=False
-            )
-        )
-
-        fig.update_layout(
-            title_text='2014 Global GDP',
-            geo=dict(
-                showframe=False,
-                showcoastlines=False,
-                projection_type='equirectangular'
-            )
-        )
 
     return fig

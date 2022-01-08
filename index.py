@@ -10,7 +10,7 @@ from dash.dependencies import Input, Output
 from app import app
 # connect chart file
 from apps import chart
-# from apps import maps
+from apps import maps
 # connect data file
 from apps import data
 import plotly.io as pio
@@ -202,8 +202,8 @@ app.layout = html.Div([
 def update_card(tab):
     if tab == 'chart':
         return chart.graph
-    # elif tab == 'map':
-    #     return maps.graph
+    elif tab == 'map':
+        return maps.graph
     else:
         return html.Div(html.P('ERROR'))
 

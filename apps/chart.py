@@ -18,7 +18,7 @@ graph = [
 
     html.Div(
         dcc.Graph(
-            id='visualization',
+            id='chart',
             figure={},
             className='h-100',
             config={'displayModeBar': False}
@@ -30,14 +30,14 @@ graph = [
             dbc.Col(
                 html.Div(
                     html.P(
-                        id='slider-label-1',
+                        id='chart-slider-label-1',
                         children={}
                     )
                 ), width=2, style={'text-align': 'center'}
             ),
             dbc.Col(
                 dcc.RangeSlider(
-                    id='date-slider',
+                    id='chart-date-slider',
                     min=0,
                     max=len(data.marks) - 1,
                     value=[0, len(data.marks) - 1],
@@ -49,7 +49,7 @@ graph = [
             dbc.Col(
                 html.Div(
                     html.P(
-                        id='slider-label-2',
+                        id='chart-slider-label-2',
                         children={}
                     )
                 ), width=2, style={'text-align': 'center'}
@@ -61,20 +61,20 @@ graph = [
 
 # ------------------------------------------------------------------------------
 # Callbacks
-@app.callback(Output('slider-label-1', 'children'),
-              Output('slider-label-2', 'children'),
-              Input('date-slider', 'value'))
+@app.callback(Output('chart-slider-label-1', 'children'),
+              Output('chart-slider-label-2', 'children'),
+              Input('chart-date-slider', 'value'))
 def update_slider_labels(slider_range):
     label1, label2 = slider_range
     return data.marks[label1], data.marks[label2]
 
 
-@app.callback(Output('visualization', 'figure'),
+@app.callback(Output('chart', 'figure'),
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
                Input('relative_option', 'value'),
-               Input('date-slider', 'value')])
+               Input('chart-date-slider', 'value')])
 def update_figure(location, metric, interval, relative_option, date_range):
     date1, date2 = date_range
 
@@ -83,7 +83,7 @@ def update_figure(location, metric, interval, relative_option, date_range):
         date_filter = (data.weekly_data.date >= pd.to_datetime(data.marks[date1])) & \
                       (data.weekly_data.date <= pd.to_datetime(data.marks[date2]))
         # relative logic
-        if  (relative_option == ['relative']) & (metric != 'vaccinations'):
+        if (relative_option == ['relative']) & (metric != 'vaccinations'):
             if metric == 'tests':
                 col_name = f'new_{metric}_per_thousand'
             else:
@@ -95,8 +95,8 @@ def update_figure(location, metric, interval, relative_option, date_range):
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
-                           x=data.weekly_data[date_filter].loc[:, country, :]['date'],
-                           y=data.weekly_data[date_filter].loc[:, country, :][col_name])
+                           x=data.weekly_data[(data.weekly_data['location'] == country) & date_filter]['date'],
+                           y=data.weekly_data[(data.weekly_data['location'] == country) & date_filter][col_name])
             )
 
     else:
