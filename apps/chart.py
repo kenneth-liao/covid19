@@ -27,7 +27,10 @@ graph = [
         dbc.Row([
             dbc.Col(
                 html.Div(
-                    html.P('Label 1')
+                    html.P(
+                        id='slider-label-1',
+                        children={}
+                    )
                 ), width=2, style={'text-align': 'center'}
             ),
             dbc.Col(
@@ -41,7 +44,10 @@ graph = [
             ),
             dbc.Col(
                 html.Div(
-                    html.P('Label 2')
+                    html.P(
+                        id='slider-label-2',
+                        children={}
+                    )
                 ), width=2, style={'text-align': 'center'}
             )
         ]), style={'height': '3vh'}
@@ -52,6 +58,14 @@ graph = [
 # ------------------------------------------------------------------------------
 # Callbacks
 
+
+@app.callback(Output('slider-label-1', 'children'),
+              Output('slider-label-2', 'children'),
+              Input('date-slider', 'value'))
+def update_slider_labels(slider_range):
+    label1, label2 = slider_range
+    return label1, label2
+    
 
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
