@@ -113,10 +113,14 @@ app.layout = html.Div([
     dbc.Row([  # logo & plotting options
         dbc.Col(  # logo
             dbc.Card(
-                dbc.CardBody(
-                    html.H1('Logo')
-                ), className='mb-4', style={'height': '10vh'}
-            ), width={'size': 2, 'offset': margin}
+                dbc.CardBody([
+                    html.H5('COVID-19 Data Explorer', style={'font-weight': 'bold'}),
+                    dcc.Markdown('''
+                    Download the complete *Our World in Data* \
+                    [COVID-19 dataset](https://github.com/owid/covid-19-data/tree/master/public/data).
+                    ''')
+                ]), className='mb-4', style={'height': '10vh'}
+            ), width={'size': 2, 'offset': margin}, align='center'
         ),
         dbc.Col([  # plotting options
             dbc.Card([
