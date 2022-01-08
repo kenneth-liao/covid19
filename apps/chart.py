@@ -15,6 +15,15 @@ from apps import data
 
 graph = [
 
+    # stores intermediate, computed data. this step is slow.
+    dcc.Store(
+        id='data-store'
+    ),
+    # stores col_name that will be plotted
+    dcc.Store(
+        id='col-name'
+    ),
+
     html.Div(
         dcc.Graph(
             id='visualization',
