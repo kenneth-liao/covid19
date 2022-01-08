@@ -83,12 +83,11 @@ def update_figure(location, metric, interval, relative_option, date_range):
         date_filter = (data.weekly_data.date >= pd.to_datetime(data.marks[date1])) & \
                       (data.weekly_data.date <= pd.to_datetime(data.marks[date2]))
         # relative logic
-        if relative_option == ['relative']:
-            if metric != 'vaccinations':
-                if metric == 'tests':
-                    col_name = f'new_{metric}_per_thousand'
-                else:
-                    col_name = f'new_{metric}_per_million'
+        if  (relative_option == ['relative']) & (metric != 'vaccinations'):
+            if metric == 'tests':
+                col_name = f'new_{metric}_per_thousand'
+            else:
+                col_name = f'new_{metric}_per_million'
         else:
             col_name = f'new_{metric}'
 
