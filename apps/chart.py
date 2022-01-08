@@ -40,7 +40,9 @@ graph = [
                     max=10,
                     value=[0, 10],
                     dots=True,
-                    allowCross=False), width=8
+                    allowCross=False,
+                    updatemode='drag'
+                ), width=8
             ),
             dbc.Col(
                 html.Div(
@@ -65,7 +67,7 @@ graph = [
 def update_slider_labels(slider_range):
     label1, label2 = slider_range
     return label1, label2
-    
+
 
 @app.callback(Output('visualization', 'figure'),
               [Input('location', 'value'),
