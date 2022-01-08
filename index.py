@@ -92,16 +92,6 @@ def relative_checklist():
     )
 
 
-# visualization component
-def visualization():
-    return dcc.Graph(
-        id='visualization',
-        figure={},
-        className='h-100',
-        config={'displayModeBar': False}
-    )
-
-
 # ------------------------------------------------------------------------------
 # App Layout
 
@@ -175,6 +165,7 @@ app.layout = html.Div([
             ),
             dbc.Row(
                 dbc.Col(
+                    # this card contains the visualizations
                     dbc.Card(
                         dbc.CardBody(id='visualization-card',
                                      children={},

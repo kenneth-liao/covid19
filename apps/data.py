@@ -12,7 +12,7 @@ data = data[['iso_code', 'location', 'date', 'total_cases', 'new_cases', 'total_
              'new_tests_per_thousand', 'total_vaccinations', 'new_vaccinations', 'total_vaccinations_per_hundred',
              'new_vaccinations_smoothed_per_million']]
 # convert date column to datetime
-data.date = pd.to_datetime(data.date)
+data['date'] = pd.to_datetime(data.date)
 
 # generate marks for date range slider
 marks = {int(i): str(j)[:10] for i, j in enumerate(sorted(data.date.unique()))}
