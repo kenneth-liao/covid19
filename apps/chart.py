@@ -73,8 +73,14 @@ def update_slider_labels(slider_range):
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
-               Input('relative', 'value')])
-def update_figure(location, metric, interval, relative):
+               Input('relative', 'value'),
+               Input('date-slider', 'value')])
+def update_figure(location, metric, interval, relative, date_range):
+
+    # filter data with date_range
+    date_condition = (data.marks[date_range[0]] <= data.data.date) & (data.data.date <= data.marks[date_range[1]])
+    filtered_data = data.data[date_condition]
+
     # resample data to weekly
     if interval == 'weekly':
         # relative logic
@@ -86,7 +92,7 @@ def update_figure(location, metric, interval, relative):
         else:
             col_name = 'new_' + metric
 
-        resampled = data.data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
+        resampled = filtered_data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
 
         traces = []
         for country in location:
@@ -110,8 +116,8 @@ def update_figure(location, metric, interval, relative):
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
-                           x=data.data[data.data['location'] == country]['date'],
-                           y=data.data[data.data['location'] == country][col_name])
+                           x=filtered_data[filtered_data['location'] == country]['date'],
+                           y=filtered_data[filtered_data['location'] == country][col_name])
             )
 
     fig = go.Figure(data=traces)
