@@ -37,8 +37,8 @@ graph = [
                 dcc.RangeSlider(
                     id='date-slider',
                     min=0,
-                    max=10,
-                    value=[0, 10],
+                    max=len(data.marks) - 1,
+                    value=[0, len(data.marks) - 1],
                     dots=True,
                     allowCross=False,
                     updatemode='drag'
@@ -66,7 +66,7 @@ graph = [
               Input('date-slider', 'value'))
 def update_slider_labels(slider_range):
     label1, label2 = slider_range
-    return label1, label2
+    return data.marks[label1], data.marks[label2]
 
 
 @app.callback(Output('visualization', 'figure'),
