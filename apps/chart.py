@@ -15,8 +15,6 @@ from apps import data
 
 graph = [
 
-    html.Div(id='hidden-div', style={'display': 'none'}),
-
     html.Div(
         dcc.Graph(
             id='visualization',
@@ -62,8 +60,6 @@ graph = [
 
 # ------------------------------------------------------------------------------
 # Callbacks
-
-
 @app.callback(Output('slider-label-1', 'children'),
               Output('slider-label-2', 'children'),
               Input('date-slider', 'value'))
@@ -76,19 +72,20 @@ def update_slider_labels(slider_range):
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
-               Input('relative', 'value')])
-def update_figure(location, metric, interval, relative):
+               Input('relative_option', 'value')])
+def update_figure(location, metric, interval, relative_option):
 
     # resample data to weekly
     if interval == 'weekly':
         # relative logic
-        if (relative == 'relative') & (metric != 'vaccinations'):
-            if metric == 'tests':
-                col_name = 'new_' + metric + '_per_thousand'
-            else:
-                col_name = 'new_' + metric + '_per_million'
+        if relative_option == ['relative']:
+            if metric != 'vaccinations':
+                if metric == 'tests':
+                    col_name = f'new_{metric}_per_thousand'
+                else:
+                    col_name = f'new_{metric}_per_million'
         else:
-            col_name = 'new_' + metric
+            col_name = f'new_{metric}'
 
         resampled = data.data[['location', 'date', col_name]].groupby('location').rolling(7, on='date').sum()
 
@@ -102,13 +99,13 @@ def update_figure(location, metric, interval, relative):
 
     else:
         # relative logic
-        if (relative == 'relative') & (metric != 'vaccinations'):
+        if (relative_option == ['relative']) & (metric != 'vaccinations'):
             if metric == 'tests':
-                col_name = interval + '_' + metric + '_per_thousand'
+                col_name = f'{interval}_{metric}_per_thousand'
             else:
-                col_name = interval + '_' + metric + '_per_million'
+                col_name = f'{interval}_{metric}_per_million'
         else:
-            col_name = interval + '_' + metric
+            col_name = f'{interval}_{metric}'
 
         traces = []
         for country in location:
@@ -125,3 +122,5 @@ def update_figure(location, metric, interval, relative):
                       margin={'t': 50})
 
     return fig
+
+

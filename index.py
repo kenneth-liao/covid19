@@ -85,7 +85,7 @@ def interval_dropdown():
 # relative to population option
 def relative_checklist():
     return dcc.Checklist(
-        id='relative',
+        id='relative_option',
         options=[
             {'label': ' Relative to population', 'value': 'relative'}
         ]
@@ -205,4 +205,4 @@ def update_card(tab):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
