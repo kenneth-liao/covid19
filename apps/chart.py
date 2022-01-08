@@ -73,10 +73,15 @@ def update_slider_labels(slider_range):
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
-               Input('relative_option', 'value')])
-def update_figure(location, metric, interval, relative_option):
+               Input('relative_option', 'value'),
+               Input('date-slider', 'value')])
+def update_figure(location, metric, interval, relative_option, date_range):
+    date1, date2 = date_range
+
     # weekly interval data is precomputed in data file
     if interval == 'weekly':
+        date_filter = (data.weekly_data.date >= pd.to_datetime(data.marks[date1])) & \
+                      (data.weekly_data.date <= pd.to_datetime(data.marks[date2]))
         # relative logic
         if relative_option == ['relative']:
             if metric != 'vaccinations':
@@ -91,11 +96,14 @@ def update_figure(location, metric, interval, relative_option):
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
-                           x=data.weekly_data.loc[:, country, :]['date'],
-                           y=data.weekly_data.loc[:, country, :][col_name])
+                           x=data.weekly_data[date_filter].loc[:, country, :]['date'],
+                           y=data.weekly_data[date_filter].loc[:, country, :][col_name])
             )
 
     else:
+        date_filter = (data.data.date >= pd.to_datetime(data.marks[date1])) & \
+                      (data.data.date <= pd.to_datetime(data.marks[date2]))
+
         # relative logic
         if (relative_option == ['relative']) & (metric != 'vaccinations'):
             if metric == 'tests':
@@ -109,8 +117,8 @@ def update_figure(location, metric, interval, relative_option):
         for country in location:
             traces.append(
                 go.Scatter(name=country, mode='markers+lines',
-                           x=data.data[data.data['location'] == country]['date'],
-                           y=data.data[data.data['location'] == country][col_name])
+                           x=data.data[(data.data['location'] == country) & date_filter]['date'],
+                           y=data.data[(data.data['location'] == country) & date_filter][col_name])
             )
 
     fig = go.Figure(data=traces)
