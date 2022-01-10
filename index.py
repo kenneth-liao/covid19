@@ -11,6 +11,7 @@ from app import app
 # connect chart file
 from apps import chart
 from apps import maps
+from apps import table
 # connect data file
 from apps import data
 import plotly.io as pio
@@ -18,11 +19,6 @@ import plotly.io as pio
 # To do
 # 1. Add table visualization to table tab
 # 3. Style the damn thing
-
-
-
-
-
 
 
 # ------------------------------------------------------------------------------
@@ -215,7 +211,7 @@ def update_card(tab):
     elif tab == 'map':
         return maps.graph
     else:
-        return html.Div(html.P('ERROR'))
+        return table.graph
 
 
 if __name__ == '__main__':
