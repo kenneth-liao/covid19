@@ -17,12 +17,18 @@ from apps import data
 graph = [
 
     html.Div(
+        dcc.Markdown('''
+        jkhkjh
+        ''')
+    ),
+
+    html.Div(
         dcc.Graph(
             id='chart',
             figure={},
             className='h-100',
             config={'displayModeBar': False}
-        ), style={'height': '52vh'}
+        ), style={'height': '48vh'}
     ),
 
     html.Div(

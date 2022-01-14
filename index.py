@@ -17,8 +17,7 @@ from apps import data
 import plotly.io as pio
 # ------------------------------------------------------------------------------
 # To do
-# 1. Add table visualization to table tab
-# 3. Style the damn thing
+# 1. Style the damn thing
 
 
 # ------------------------------------------------------------------------------

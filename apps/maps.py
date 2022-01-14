@@ -105,7 +105,6 @@ def update_figure(location, metric, interval, relative_option, date_range):
         )
 
         fig.update_layout(
-            title_text='2014 Global GDP',
             geo=dict(
                 showframe=False,
                 showcoastlines=False,
@@ -141,7 +140,6 @@ def update_figure(location, metric, interval, relative_option, date_range):
         )
 
         fig.update_layout(
-            title_text='2014 Global GDP',
             geo=dict(
                 showframe=False,
                 showcoastlines=False,
