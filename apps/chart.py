@@ -17,7 +17,7 @@ from apps import data
 graph = [
 
     html.Div(
-        dcc.Markdown(id='fig-title')
+        dcc.Markdown(id='fig-title'), style={'margin': 'auto', 'height': '13%'}
     ),
 
     html.Div(
@@ -26,7 +26,7 @@ graph = [
             figure={},
             className='h-100',
             config={'displayModeBar': False}
-        ), style={'height': '48vh'}
+        ), style={'margin': 'auto', 'height': '79%'}
     ),
 
     html.Div(
@@ -58,7 +58,7 @@ graph = [
                     )
                 ), width=2, style={'text-align': 'center'}
             )
-        ]), style={'height': '3vh'}
+        ]), style={'margin': 'auto', 'height': '8%'}
     )
 ]
 
@@ -127,12 +127,17 @@ def update_figure(location, metric, interval, relative_option, date_range):
 
     if interval == 'new':
         fig_title = f'''
-            ##### Daily new confirmed COVID-19 {metric}
+            ###### Daily new confirmed COVID-19 {metric}
             Due to limited testing, the number of confirmed cases is lower than the true number of infections.
         '''
     elif interval == 'weekly':
         fig_title = f'''
-            ##### Daily new confirmed COVID-19 {metric}
+            ###### Weekly new confirmed COVID-19 {metric}
+            Due to limited testing, the number of confirmed cases is lower than the true number of infections.
+        '''
+    else:
+        fig_title = f'''
+            ###### Total confirmed COVID-19 {metric}
             Due to limited testing, the number of confirmed cases is lower than the true number of infections.
         '''
 
