@@ -17,7 +17,13 @@ graph = [
 
     html.Div(
         dash_table.DataTable(
-            id='data-table'
+            id='data-table',
+            style_header={
+                'backgroundColor': 'rgb(210, 210, 210)',
+                'color': 'black',
+                'fontWeight': 'bold'
+            },
+            export_format="csv"
         ), style={'height': '51vh', 'overflow-y': 'auto', 'margin-bottom': '10px'}
     ),
 

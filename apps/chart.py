@@ -125,6 +125,12 @@ def update_figure(location, metric, interval, relative_option, date_range):
                            y=data.data[(data.data['location'] == country) & date_filter][col_name])
             )
 
+    if relative_option == ['relative']:
+        fig_title = f'''
+            ###### Daily new confirmed COVID-19 {metric}
+            Due to limited testing, the number of confirmed cases is lower than the true number of infections.
+        '''
+
     if interval == 'new':
         fig_title = f'''
             ###### Daily new confirmed COVID-19 {metric}
