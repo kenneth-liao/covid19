@@ -16,12 +16,16 @@ from apps import data
 graph = [
 
     html.Div(
+        dcc.Markdown(id='map-title'), style={'margin': 'auto', 'height': '13%'}
+    ),
+
+    html.Div(
         dcc.Graph(
             id='map-graph',
             figure={},
             className='h-100',
             config={'displayModeBar': False}
-        ), style={'height': '52vh'}
+        ), style={'height': '79%'}
     ),
 
     html.Div(
@@ -53,7 +57,7 @@ graph = [
                     )
                 ), width=2, style={'text-align': 'center'}
             )
-        ]), style={'height': '3vh'}
+        ]), style={'height': '8%'}
     )
 ]
 
@@ -69,6 +73,7 @@ def update_slider_labels(slider_range):
 
 
 @app.callback(Output('map-graph', 'figure'),
+              Output('map-title', 'children'),
               [Input('location', 'value'),
                Input('metric', 'value'),
                Input('interval', 'value'),
@@ -147,4 +152,21 @@ def update_figure(location, metric, interval, relative_option, date_range):
             )
         )
 
-    return fig
+    # figure title
+    if interval == 'new':
+        fig_title = f'''
+            ###### Daily new confirmed COVID-19 {metric}
+            Due to limited testing, the number of confirmed cases is lower than the true number of infections.
+        '''
+    elif interval == 'weekly':
+        fig_title = f'''
+            ###### Weekly new confirmed COVID-19 {metric}
+            Due to limited testing, the number of confirmed cases is lower than the true number of infections.
+        '''
+    else:
+        fig_title = f'''
+            ###### Total confirmed COVID-19 {metric}
+            Due to limited testing, the number of confirmed cases is lower than the true number of infections.
+        '''
+
+    return fig, fig_title
