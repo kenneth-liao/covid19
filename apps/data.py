@@ -1,10 +1,15 @@
 import pandas as pd
+import pathlib
 
 # ------------------------------------------------------------------------------
 # Data Processing
 
+# get relative data folder
+PATH = pathlib.Path(__file__).parent
+DATA_PATH = PATH.joinpath("../data").resolve()
+
 # load the latest data
-data = pd.read_csv('data/owid-covid-data.csv')
+data = pd.read_csv(DATA_PATH.joinpath("owid-covid-data.csv"))
 # filter data down to only columns we need
 data = data[['iso_code', 'location', 'date', 'total_cases', 'new_cases', 'total_cases_per_million',
              'new_cases_per_million', 'total_deaths', 'new_deaths', 'total_deaths_per_million',
