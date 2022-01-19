@@ -7,7 +7,7 @@ from dash import html
 # Input and Output objects for callback decorator
 from dash.dependencies import Input, Output
 # connect app.py file
-from app import app
+from app import app, server
 # connect chart file
 from apps import chart
 from apps import maps
