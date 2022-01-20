@@ -116,3 +116,6 @@ dmypy.json
 # for Heroku
 *.pyc
 .DS_Store
+
+# windows bat file
+*.bat
